@@ -1,0 +1,36 @@
+" ===============================
+" General Settings
+" ===============================
+set number            " Show line numbers
+set relativenumber    " Relative line numbers
+set tabstop=4         " Number of spaces that a <Tab> in the file counts for
+set shiftwidth=4      " Number of spaces to use for each step of (auto)indent
+set autoindent        " Copy indent from current line when starting a new line
+colorscheme slate     " Use the slate color scheme
+
+" ===============================
+" Search Settings
+" ===============================
+set ignorecase        " Case-insensitive searching
+set incsearch         " Show matches while typing
+set hlsearch          " Highlight all matches
+
+" ===============================
+" Cursor Settings
+" ===============================
+" Always use block cursor in all modes
+let &t_SI = "\e[2 q"   " Insert mode → block
+let &t_EI = "\e[2 q"   " Normal mode → block
+let &t_SR = "\e[2 q"   " Replace mode → block
+
+" ===============================
+" Search Highlight Auto-Clear
+" ===============================
+augroup clear_search_highlight
+  autocmd!
+  autocmd InsertEnter * :nohlsearch   " Clear highlights when entering Insert mode
+augroup END
+
+" Also clear highlights manually with <Esc>
+nnoremap <Esc> :nohlsearch<CR><Esc>
+
