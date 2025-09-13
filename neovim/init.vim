@@ -33,7 +33,6 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'saadparwaiz1/cmp_luasnip'
-Plug 'neovim/nvim-lspconfig'
 
 call plug#end()
 
@@ -52,7 +51,7 @@ set encoding=UTF-8
 set visualbell
 set scrolloff=5
 
-:colorscheme onedark
+colorscheme onedark
 let g:airline_theme='onedark'
 
 " NERDTree Configuration
@@ -72,10 +71,7 @@ if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
 
-let g:bullets_enabled_file_types = [
-    \ 'markdown',
-    \ 'text'
-    \]
+let g:bullets_enabled_file_types = ['markdown','text']
 
 let g:airline_left_sep = ''
 let g:airline_left_alt_sep = ''
@@ -89,7 +85,6 @@ let g:airline_symbols.linenr = ''
 nmap <F6> :TagbarToggle<CR>
 
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
-
 nnoremap <F3> :noh<CR>
 
 " Floaterm
@@ -114,7 +109,7 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-P>" : "\<C-H>"
 :imap <4-MiddleMouse> <Nop>
 
 " ---------------------------
-" LuaSnip + nvim-cmp + LSP Configuration
+" LuaSnip + nvim-cmp
 " ---------------------------
 lua << EOF
 local luasnip = require('luasnip')
@@ -123,30 +118,28 @@ require('luasnip.loaders.from_vscode').lazy_load()
 local cmp = require('cmp')
 cmp.setup({
   snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
+    expand = function(args) luasnip.lsp_expand(args.body) end,
   },
   mapping = {
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
     ['<Tab>'] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-            cmp.select_next_item()
-        elseif luasnip.expand_or_jumpable() then
-            luasnip.expand_or_jump()
-        else
-            fallback()
-        end
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      else
+        fallback()
+      end
     end, {'i','s'}),
     ['<S-Tab>'] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-            cmp.select_prev_item()
-        elseif luasnip.jumpable(-1) then
-            luasnip.jump(-1)
-        else
-            fallback()
-        end
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
     end, {'i','s'}),
   },
   sources = {
@@ -156,19 +149,6 @@ cmp.setup({
     { name = 'path' },
   },
 })
-
--- LSP Servers
-local lspconfig = require('lspconfig')
-
--- Python
-lspconfig.pyright.setup{}
--- JavaScript / TypeScript / React / Node.js
-lspconfig.ts_ls.setup{}
--- HTML / CSS
-lspconfig.html.setup{}
-lspconfig.cssls.setup{}
--- Java
-lspconfig.jdtls.setup{}
 EOF
 
 " ---------------------------
@@ -183,7 +163,6 @@ autocmd FileType css,scss lua require('luasnip').filetype_extend('css', {'css','
 " ---------------------------
 " Auto Closing Tags Configuration
 " ---------------------------
-" Enable for HTML, XML, JSX, and TSX
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.xml,*.jsx,*.tsx'
 let g:closetag_xhtml_filenames = '*.xhtml,*.jsx,*.tsx'
 let g:closetag_filetypes = 'html,xml,javascriptreact,typescriptreact'
@@ -195,15 +174,8 @@ let g:closetag_regions = {
 \ 'typescriptreact' : 'jsxRegion,tsxRegion'
 \}
 
-" Map <C-]> to jump between tag start and end
 nmap <C-]> :call CloseTag()<CR>
-
-" Enable case-sensitive tag matching (optional, recommended)
 let g:closetag_enable_case_insensitive = 0
-
-" Insert closing quote automatically
 let g:closetag_auto_quickquote = 1
-
-" Close tags immediately after typing '>'
 let g:closetag_auto_close = 1
 
